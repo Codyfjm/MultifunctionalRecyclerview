@@ -6,33 +6,42 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.guanaj.easyswipemenulibrary.EasySwipeMenuLayout;
+
 import java.util.List;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> implements View.OnClickListener{
-    public List<String> datas = null;
+/**
+ * 后续可以将MyAdapter<T>封装成接口
+ * @param <T>
+ */
+public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
+    public List<T> datas = null;
 
-    public MyAdapter(List<String> datas) {
+    public MyAdapter(List<T> datas) {
         this.datas = datas;
     }
-
-    public int position;
 
     //创建新View，被LayoutManager所调用
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_layout, viewGroup, false);
         ViewHolder vh = new ViewHolder(view);
-        //将创建的View注册点击事件
-        view.setOnClickListener(this);
         return vh;
     }
 
     //将数据与界面进行绑定的操作
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        viewHolder.mTextView.setText(datas.get(position));
+    public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
+        viewHolder.content_name.setText(datas.get(position).toString());
         //将数据保存在itemView的Tag中，以便点击时进行获取
-        viewHolder.itemView.setTag(datas.get(position));
+        viewHolder.itemView.setTag(position);
+
+        viewHolder.right_del.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeItem(datas.get(position));
+            }
+        });
     }
 
     //获取数据的数量
@@ -41,33 +50,32 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> implem
         return datas.size();
     }
 
-    @Override
-    public void onClick(View v) {
-        if (mOnItemClickListener != null) {
-            //注意这里使用getTag方法获取数据
-            mOnItemClickListener.onItemClick(v, (String) v.getTag());
-        }
-    }
 
     //自定义的ViewHolder，持有每个Item的的所有界面元素
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView mTextView;
+        EasySwipeMenuLayout es_1;
+        TextView right_del;
+        TextView content_name;
 
         public ViewHolder(View view) {
             super(view);
-            mTextView = (TextView) view.findViewById(R.id.text);
+            content_name = (TextView) view.findViewById(R.id.content_name);
+            right_del = (TextView) view.findViewById(R.id.right_del);
+            es_1 = (EasySwipeMenuLayout) view.findViewById(R.id.es_1);
         }
     }
 
-    public void addItem(String content, int position) {
+    public void addItem(T content, int position) {
         datas.add(position, content);
-        notifyItemInserted(position); //Attention!
+        notifyItemInserted(position);
+        notifyDataSetChanged();//数据更新
     }
 
-    public void removeItem(String model) {
+    public void removeItem(T model) {
         int position = datas.indexOf(model);
         datas.remove(position);
-        notifyItemRemoved(position);//Attention!
+        notifyItemRemoved(position);
+        notifyDataSetChanged();//数据更新
     }
 
 

@@ -44,13 +44,13 @@ public class MainActivity extends AppCompatActivity {
         mAdapter = new MyAdapter(myData);
         mRecyclerView.setAdapter(mAdapter);
 
-        mAdapter.setOnItemClickListener(new MyAdapter.OnRecyclerViewItemClickListener() {
-            @Override
-            public void onItemClick(View view, String data) {
-                Toast.makeText(MainActivity.this, data.toString(), Toast.LENGTH_SHORT).show();
-                mAdapter.removeItem(data);//点击删除
-                mAdapter.addItem(data+"++++",view.getId()+1);
-            }
-        });
+//        mAdapter.setOnItemClickListener(new MyAdapter.OnRecyclerViewItemClickListener() {
+//            @Override
+//            public void onItemClick(View view, String data) {
+//                Toast.makeText(MainActivity.this, data.toString(), Toast.LENGTH_SHORT).show();
+//                mAdapter.removeItem(data);//点击删除
+//                mAdapter.addItem(data+"++++",view.getId()+1);
+//            }
+//        });
     }
 }
